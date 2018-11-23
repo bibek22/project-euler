@@ -11,13 +11,14 @@ typedef struct llist {
 } llist;
 
 void dijkstra(node *start){
-    
-
+    // to be implemented.
 
 
 }
 
 void compete(llist* lboard, llist* competer){
+    // this is for when implementing dijkstra algo, a linked list of 
+    // nodes that have minimum value.
     while (lboard->this->weight < competer->this->weight){
         if (! lboard->next){
             lboard->next = competer;
@@ -27,6 +28,8 @@ void compete(llist* lboard, llist* competer){
 }
 
 void cliptail(llist *lboard){
+    // if i ever wanted to clip a linked list 
+    // to free some memory
     if (lboard){ 
         cliptail(lboard->next);
     }
@@ -56,18 +59,20 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Usage: main <filename>");
         return 1;
     }
+
     FILE *handler = fopen(argv[1], "r");
     int num,rownum, index; // index = i for ith num of a row
     char c;
     rownum = 0;
     node *update, *start; // this is temporary storage for a node while updating the lastrow[]
 
-    // root of the tries
+    // root of the trie 
     start = create();
     lastrow[0] =start;
     start->weight = getnum(handler);
 
     while (rownum<99){
+        // populate all 100 rows of nodes
         rownum++;
         index = -1;
         while( index < rownum ){
@@ -92,12 +97,11 @@ int main(int argc, char *argv[]){
                 lastrow[index]->left = newnode;
             }
             if (index != 0){
-                lastrow[index-1] = update;  // update is the previous node in the row
+                lastrow[index-1] = update;  // update is the previous node in the current row
             }
             update = newnode;
         }
         lastrow[index] = update;
     }
-    // check this.
     return 0;
 }
