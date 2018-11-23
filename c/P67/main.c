@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ctype.h>
 #include "tries.h"
 #include "tries.c"
 #define LEFT 0
 #define RIGHT 1
-#define PATHUP 1
+#define PATHUP 2
 
 typedef struct llist {
     struct llist* prev;
@@ -26,8 +25,6 @@ void resolveNode(node *start){
         child->exit[PATHUP] = start;
     }
     }
-
-
 }
 
 void dijkstra(node *start){
@@ -38,8 +35,7 @@ void dijkstra(node *start){
 }
 
 void compete(llist* lboard, llist* competer){
-    // this is for when implementing dijkstra algo, a linked list of 
-    // nodes that have minimum value.
+    // this is for when implementing dijkstra algo, maintains a l(eader)board.
     while (lboard->this->upvalue < competer->this->upvalue){
         if (! lboard->next){
             lboard->next = competer;
