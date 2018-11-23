@@ -2,7 +2,7 @@
 #include "llist.h"
 #include "tries.h"
 
-llist *create(){
+llist *createlist(){
     // instantiates a linked list node with NULL vlaues
     llist *newllist = malloc(sizeof(llist));
     if (!newllist){
@@ -11,6 +11,7 @@ llist *create(){
     }else {
         newllist->this = 0;
         newllist->next = NULL;
+        newllist->prev = NULL;
         return newllist;
     }
 }

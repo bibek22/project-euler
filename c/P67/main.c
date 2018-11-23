@@ -8,18 +8,21 @@
 #define RIGHT 1
 #define PATHUP 2
 
-void compete(llist* lboard, llist* competer){
+void compete(llist* lboard, node* competer){
     // this is for when implementing dijkstra algo, maintains a l(eader)board.
     // takes a linked list of leaderboard and a llist node  
-    while (lboard->this->upvalue < competer->this->upvalue){
+    llist* newnode;
+    newnode = createlist();
+    newnode->this = competer;
+    while (lboard->this->upvalue < newnode->this->upvalue){
         if (! lboard->next){
-            lboard->next = competer;
+            lboard->next = newnode;
         }
         lboard = lboard->next;
     }
 }
 
-void resolveNode(llist* lboard, node *start){
+node* resolveNode(llist* lboard, node *start){
     // do the arithmetic and optimization at the node and update the pathup
     node* child;
     for (int i = 0;i<2;i++){
@@ -27,24 +30,27 @@ void resolveNode(llist* lboard, node *start){
     if (child->exit[PATHUP] == NULL){
         child->upvalue += start->upvalue;
         child->exit[PATHUP] = start;
+        compete(lboard, child);
     }else if ( child->upvalue > start->upvalue + child->nodevalue ){
         child->upvalue = start->upvalue + child->nodevalue;
         child->exit[PATHUP] = start;
     }
+    compete(lboard, child);
     }
 }
 
 void dijkstra(node *start){
     // to be implemented.
     llist* lboard = NULL;
-    lboard = malloc(sizeof(llist));
-    resolveNode(lboard, start);
-    
-
+    lboard = createlist();
+    lboard->this = start;
+    while( ! start ){
+        start = resolveNode(lboard, start);
+    }
 }
 
 void cliptail(llist *lboard){
-    // if i ever wanted to clip a linked list 
+    // if i ever wanted to clip the tail off a linked list 
     // to free some memory
     if (lboard){ 
         cliptail(lboard->next);
