@@ -4,28 +4,30 @@
 #include "llist.h"
 #include "llist.c"
 #include "tries.c"
-#define LEFT 0
-#define RIGHT 1
-#define PATHUP 2
 
-void compete(llist* lboard, node* competer){
+llist* compete(llist* lboard, node* competer){
     // this is for when implementing dijkstra algo, maintains a l(eader)board.
     // takes a linked list of leaderboard and a llist node  
     llist* newnode;
     newnode = createlist();
     newnode->this = competer;
-    while (lboard->this->upvalue <= newnode->this->upvalue){
+    while (lboard->this->upvalue < newnode->this->upvalue){
+        printf("On compete.\n");
+        printf("nodevalue = %d\n", newnode->this->nodevalue);
+        printf("lbvalue = %d\n", lboard->this->nodevalue);
         if (! lboard->next){
             // if reached the end of the leaderboard
             lboard->next = newnode;
-        }
-        lboard = lboard->next;
+            break;
+        }else 
+            lboard = lboard->next;
     }
     // at this point:
     // lboard == the node with node having just greater upvalue than our competer
     // so insert newnode just before it.
-    lboard->prev->next = newnode;
+    
     newnode->next = lboard;
+    return newnode;
 }
 
 llist* resolveNode(llist* lboard, node *start){
@@ -33,22 +35,20 @@ llist* resolveNode(llist* lboard, node *start){
     node* child;
     for (int i = 0;i<2;i++){  // left and right child
         child = start->exit[i];
-        if (!child){
-            break; // i.e. if it's the end of beginning of a row.
-        }
         if (child->exit[PATHUP] == NULL){
-            child->upvalue += start->upvalue;
+            child->upvalue = start->upvalue + child->nodevalue;
             child->exit[PATHUP] = start;
-            compete(lboard, child);
         }else if ( child->upvalue > start->upvalue + child->nodevalue ){
             child->upvalue = start->upvalue + child->nodevalue;
             child->exit[PATHUP] = start;
         }
-        compete(lboard, child);
+        lboard = compete(lboard, child);
     }
     // now the node at start is done. remove it from lboard.
+    llist* tmp;
+    tmp = lboard;
     lboard = lboard->next;
-    free(lboard->prev);
+    free(tmp);
     return lboard;
 }
 
@@ -58,6 +58,7 @@ node* dijkstra(node *start){
     lboard = createlist();
     lboard->this = start;
     while(1){  // till reached the end of the leaderboard(?)
+        printf("Doing\n");
         lboard = resolveNode(lboard, start);
         start = lboard->this;
         if ((start->exit[LEFT] == NULL) && (start->exit[RIGHT] == NULL)){
@@ -114,6 +115,7 @@ int main(int argc, char *argv[]){
     start = create();
     lastrow[0] =start;
     start->nodevalue = getnum(handler);
+    start->upvalue = start->nodevalue;
 
     while (rownum<99){
         // populate all 100 rows of nodes

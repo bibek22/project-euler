@@ -7,7 +7,6 @@
 
 typedef struct llist {
    node* this; 
-   struct llist* prev;
    struct llist* next;
 
 } llist;

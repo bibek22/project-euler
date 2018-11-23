@@ -9,9 +9,8 @@ llist *createlist(){
         fprintf(stderr, "couldn't allocate memory.");
         return NULL;
     }else {
-        newllist->this = 0;
+        newllist->this = NULL;
         newllist->next = NULL;
-        newllist->prev = NULL;
         return newllist;
     }
 }
