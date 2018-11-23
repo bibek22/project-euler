@@ -1,12 +1,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "tries.h"
+#define LEFT 0
+#define RIGHT 1
+#define PATHUP 2
 
 void destroy(node* table){
     // to free all the heaps memory 
     node* next[2];
-    next[0] = table->left;
-    next[1] = table->right;
+    next[0] = table->exit[LEFT];
+    next[1] = table->exit[RIGHT];
 
     for (int i=0; i < 2; i++){
         node* nextnode;
@@ -26,20 +29,20 @@ node* add(node *dict, int toright){
         return NULL;
     }
     if (toright)
-        dict->right = new;
+        dict->exit[RIGHT] = new;
     else
-        dict->left = new;
+        dict->exit[LEFT] = new;
 
-    new->left = NULL;
-    new->right = NULL;
+    new->exit[LEFT] = NULL;
+    new->exit[RIGHT] = NULL;
     return new;
 }
 
 node* create(){
     node* table = NULL;
     table = malloc(sizeof(node));
-    table->left = NULL;
-    table->right = NULL;
+    table->exit[LEFT] = NULL;
+    table->exit[RIGHT] = NULL;
     return table;
 }
 

@@ -14,39 +14,61 @@ void compete(llist* lboard, node* competer){
     llist* newnode;
     newnode = createlist();
     newnode->this = competer;
-    while (lboard->this->upvalue < newnode->this->upvalue){
+    while (lboard->this->upvalue <= newnode->this->upvalue){
         if (! lboard->next){
+            // if reached the end of the leaderboard
             lboard->next = newnode;
         }
         lboard = lboard->next;
     }
+    // at this point:
+    // lboard == the node with node having just greater upvalue than our competer
+    // so insert newnode just before it.
+    lboard->prev->next = newnode;
+    newnode->next = lboard;
 }
 
-node* resolveNode(llist* lboard, node *start){
+llist* resolveNode(llist* lboard, node *start){
     // do the arithmetic and optimization at the node and update the pathup
     node* child;
-    for (int i = 0;i<2;i++){
-    child = start->exit[i];
-    if (child->exit[PATHUP] == NULL){
-        child->upvalue += start->upvalue;
-        child->exit[PATHUP] = start;
+    for (int i = 0;i<2;i++){  // left and right child
+        child = start->exit[i];
+        if (!child){
+            break; // i.e. if it's the end of beginning of a row.
+        }
+        if (child->exit[PATHUP] == NULL){
+            child->upvalue += start->upvalue;
+            child->exit[PATHUP] = start;
+            compete(lboard, child);
+        }else if ( child->upvalue > start->upvalue + child->nodevalue ){
+            child->upvalue = start->upvalue + child->nodevalue;
+            child->exit[PATHUP] = start;
+        }
         compete(lboard, child);
-    }else if ( child->upvalue > start->upvalue + child->nodevalue ){
-        child->upvalue = start->upvalue + child->nodevalue;
-        child->exit[PATHUP] = start;
     }
-    compete(lboard, child);
-    }
+    // now the node at start is done. remove it from lboard.
+    lboard = lboard->next;
+    free(lboard->prev);
+    return lboard;
 }
 
-void dijkstra(node *start){
+node* dijkstra(node *start){
     // to be implemented.
     llist* lboard = NULL;
     lboard = createlist();
     lboard->this = start;
-    while( ! start ){
-        start = resolveNode(lboard, start);
+    while(1){  // till reached the end of the leaderboard(?)
+        lboard = resolveNode(lboard, start);
+        start = lboard->this;
+        if ((start->exit[LEFT] == NULL) && (start->exit[RIGHT] == NULL)){
+            break; 
+            //you're at the bottom of the triangle. and this algo implies backtracing
+            // start gives you the optimal path.
+        }
     }
+
+    demolish(lboard);
+    return(start);
 }
 
 void cliptail(llist *lboard){
@@ -125,5 +147,11 @@ int main(int argc, char *argv[]){
         }
         lastrow[index] = update;
     }
+    // delete the array if possible
+
+    start = dijkstra(start);
+    //start now is the node at the bottom row of trie with pathup leading to optimal path
+    //but path is not what we need right now. 
+    printf("The minimal value of %d", 10000-start->upvalue);
     return 0;
 }
