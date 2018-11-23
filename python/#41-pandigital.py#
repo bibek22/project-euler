@@ -1,0 +1,7 @@
+#!/usr/bin/python
+
+import primeMod as pm
+import time
+
+
+start = time.time()
