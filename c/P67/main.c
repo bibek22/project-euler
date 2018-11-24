@@ -6,45 +6,49 @@
 #include "tries.c"
 
 llist* compete(llist* lboard, node* competer){
-    // this is for when implementing dijkstra algo, maintains a l(eader)board.
-    // takes a linked list of leaderboard and a llist node  
-    llist* newnode;
-    newnode = createlist();
-    newnode->this = competer;
-    while (lboard->this->upvalue < newnode->this->upvalue){
-        printf("On compete.\n");
-        printf("nodevalue = %d\n", newnode->this->nodevalue);
+    // when implementing dijkstra algo, maintains a l(eader)board.
+    // takes a linked list of leaderboard and a trie node  
+    llist *newEntry, *lastCompared;
+    llist* lboardBackup;
+    lboardBackup = lboard;
+    newEntry = createlist();
+    newEntry->this = competer;
+    lastCompared = lboard;
+    while (lboard->this->upvalue < newEntry->this->upvalue){
         printf("lbvalue = %d\n", lboard->this->nodevalue);
         if (! lboard->next){
             // if reached the end of the leaderboard
-            lboard->next = newnode;
-            break;
+            lboard->next = newEntry;
+            return lboardBackup;
         }else 
+            lastCompared = lboard;
             lboard = lboard->next;
     }
     // at this point:
     // lboard == the node with node having just greater upvalue than our competer
     // so insert newnode just before it.
-    
-    newnode->next = lboard;
-    return newnode;
+     
+    lastCompared->next = newEntry;
+    newEntry->next = lboard;
+    return newEntry;
 }
 
-llist* resolveNode(llist* lboard, node *start){
+llist* resolveNode(llist* lboard, node *nodeToSolve){
     // do the arithmetic and optimization at the node and update the pathup
     node* child;
     for (int i = 0;i<2;i++){  // left and right child
-        child = start->exit[i];
+        child = nodeToSolve->exit[i];
         if (child->exit[PATHUP] == NULL){
-            child->upvalue = start->upvalue + child->nodevalue;
-            child->exit[PATHUP] = start;
-        }else if ( child->upvalue > start->upvalue + child->nodevalue ){
-            child->upvalue = start->upvalue + child->nodevalue;
-            child->exit[PATHUP] = start;
+            child->upvalue = nodeToSolve->upvalue + child->nodevalue;
+            child->exit[PATHUP] = nodeToSolve;
+        }else if ( child->upvalue > nodeToSolve->upvalue + child->nodevalue ){
+            child->upvalue = nodeToSolve->upvalue + child->nodevalue;
+            child->exit[PATHUP] = nodeToSolve;
         }
         lboard = compete(lboard, child);
     }
-    // now the node at start is done. remove it from lboard.
+    // now the node at nodeToSolve is done. remove it from lboard.
+    printf("%d is done\n", lboard->this->nodevalue);
     llist* tmp;
     tmp = lboard;
     lboard = lboard->next;
@@ -67,7 +71,6 @@ node* dijkstra(node *start){
             // start gives you the optimal path.
         }
     }
-
     demolish(lboard);
     return(start);
 }
@@ -109,10 +112,11 @@ int main(int argc, char *argv[]){
     int num,rownum, index; // index = i for ith num of a row
     char c;
     rownum = 0;
-    node *update, *start; // this is temporary storage for a node while updating the lastrow[]
+    node *update, *start, *startbackup; // this is temporary storage for a node while updating the lastrow[]
 
     // root of the trie 
     start = create();
+    startbackup = start; // for when freeing at last.
     lastrow[0] =start;
     start->nodevalue = getnum(handler);
     start->upvalue = start->nodevalue;
@@ -129,6 +133,7 @@ int main(int argc, char *argv[]){
             if (!newnode)
                 return -1;
             newnode->nodevalue = getnum(handler);
+            newnode->upvalue = 10000;
             newnode->exit[PATHUP] = NULL;
             newnode->exit[LEFT] = NULL;
             newnode->exit[RIGHT] = NULL;
@@ -150,10 +155,10 @@ int main(int argc, char *argv[]){
         lastrow[index] = update;
     }
     // delete the array if possible
-
+    // main() above this works as intended
     start = dijkstra(start);
-    //start now is the node at the bottom row of trie with pathup leading to optimal path
-    //but path is not what we need right now. 
+    //start now is the node at the bottom row of trie
     printf("The minimal value of %d", 10000-start->upvalue);
+    destroy(startbackup);
     return 0;
 }
