@@ -76,7 +76,7 @@ node* dijkstra(node *start){
 void cliptail(llist *lboard){
     // if i ever wanted to clip the tail off a linked list 
     // to free some memory
-    if (lboard){ 
+    if (lboard->next){ 
         cliptail(lboard->next);
     }
     free(lboard);
