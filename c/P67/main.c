@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include "tries.h"
 #include "llist.h"
-#include "llist.c"
-#include "tries.c"
 
 llist* compete(llist* lboard, node* competer){
     // when implementing dijkstra algo, maintains a l(eader)board.

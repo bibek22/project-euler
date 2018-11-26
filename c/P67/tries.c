@@ -1,9 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "tries.h"
-#define LEFT 0
-#define RIGHT 1
-#define PATHUP 2
 
 void destroy(node* table){
     // to free all the heaps memory 
@@ -21,14 +18,14 @@ void destroy(node* table){
     }
 }
 
-node* add(node *dict, int toright){
+node* add(node *dict, int index){
     node *new = NULL;
     new = malloc(sizeof(node));
     if (!new){
         fprintf(stderr, "Unable to alocate memory.");
         return NULL;
     }
-    if (toright)
+    if (index==RIGHT)
         dict->exit[RIGHT] = new;
     else
         dict->exit[LEFT] = new;
