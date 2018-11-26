@@ -48,7 +48,7 @@ void demolish(llist *target){
     //frees up the heap memory used by the linked list.
     if (target->next == NULL){
         free(target);
-    }
-    demolish(target->next);
+    }else
+        demolish(target->next);
     free(target);
 }

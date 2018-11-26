@@ -4,18 +4,18 @@
 
 void destroy(node* table){
     // to free all the heaps memory 
+    node* nextnode;
     node* next[2];
     next[0] = table->exit[LEFT];
     next[1] = table->exit[RIGHT];
 
     for (int i=0; i < 2; i++){
-        node* nextnode;
         nextnode = next[i];
         if (nextnode != NULL){
             destroy(next[i]);
         }
-        free(nextnode);
     }
+    free(table);
 }
 
 node* add(node *dict, int index){
