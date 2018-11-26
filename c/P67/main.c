@@ -14,13 +14,10 @@ llist* compete(llist* lboard, node* competer){
     newEntry->this = competer;
     lastCompared = lboard;
 
-    printf("Rank being compared for %d:\n", competer->nodevalue);
     while (lboard->this->upvalue < newEntry->this->upvalue){
-        printf("lbvalue = %d\n", lboard->this->upvalue);
         if (! lboard->next){
             // if reached the end of the leaderboard
             lboard->next = newEntry;
-            printf("lbvalue = %d. <-\n", newEntry->this->upvalue);
             return lboardBackup;
         }else 
             lastCompared = lboard;
@@ -31,13 +28,7 @@ llist* compete(llist* lboard, node* competer){
     // so insert newnode just before it.
      
     lastCompared->next = newEntry;
-    printf("lbvalue = %d <-\n", newEntry->this->upvalue);
     newEntry->next = lboard;
-    while (! lboard){
-        printf("lbvalue = %d\n", lboard->this->upvalue);
-        lboard = lboard->next;
-    }
-    printf(".\n");
     return lboardBackup;
 }
 
@@ -54,7 +45,6 @@ llist* resolveNode(llist* lboard, node *nodeToSolve){
         }       
     }
     // now the node at nodeToSolve is done. remove it from lboard.
-    printf("%d is done\n", lboard->this->nodevalue);
     llist* tmp;
     tmp = lboard;
     lboard = lboard->next;
@@ -77,7 +67,6 @@ node* dijkstra(node *start){
         }
     }
     demolish(lboard);
-    printf("Freed leaderboard memory.\n");
     return(start);
 }
 
@@ -163,7 +152,7 @@ int main(int argc, char *argv[]){
     // main() above this works as intended
     start = dijkstra(start);
     //start now is the node at the bottom row of trie
-    printf("The minimal value of %d\n", start->upvalue);
-    destroy(startbackup);
+    printf("The minimal value of %d\n", 10000-start->upvalue);
+    //destroy(startbackup);
     return 0;
 }

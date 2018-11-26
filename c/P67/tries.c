@@ -11,9 +11,8 @@ void destroy(node* table){
 
     for (int i=0; i < 2; i++){
         nextnode = next[i];
-        if (nextnode != NULL){
-            destroy(next[i]);
-        }
+        if (nextnode != NULL)
+            destroy(nextnode);
     }
     free(table);
 }
