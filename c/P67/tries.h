@@ -13,7 +13,7 @@ typedef struct node {
     struct node *exit[3]; // left(0) right(1) and route(2) to efficient one 
 } node;
 
-void destroy(node* table);
+int destroy(node* table, int hitend);
 node* add(node *dict, int toright);
 node* create(void);
 

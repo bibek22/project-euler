@@ -2,19 +2,21 @@
 #include <stdio.h>
 #include "tries.h"
 
-void destroy(node* table){
-    // to free all the heaps memory 
-    node* nextnode;
+int destroy(node* root, int hitend){
     node* next[2];
-    next[0] = table->exit[LEFT];
-    next[1] = table->exit[RIGHT];
+    next[1] = root->exit[RIGHT];
+    next[0] = root->exit[LEFT];
 
     for (int i=0; i < 2; i++){
-        nextnode = next[i];
-        if (nextnode != NULL)
-            destroy(nextnode);
+        if (hitend && (i ==1))
+            return hitend;
+        if (next[i])
+            hitend = destroy(next[i], hitend);
+        else
+            hitend = 1;
     }
-    free(table);
+    free(root);
+    return hitend;
 }
 
 node* add(node *dict, int index){

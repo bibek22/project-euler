@@ -152,7 +152,7 @@ int main(int argc, char *argv[]){
     // main() above this works as intended
     start = dijkstra(start);
     //start now is the node at the bottom row of trie
-    printf("The minimal value of %d\n", 10000-start->upvalue);
-    //destroy(startbackup);
+    printf("The Maximum value of path: %d\n", 10000-start->upvalue);
+    destroy(startbackup, 0);
     return 0;
 }
